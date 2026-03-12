@@ -1,178 +1,215 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import * as Linking from "expo-linking";
 
-export default function Dashboard() {
+type RiskLevel = "LOW" | "WARNING" | "HIGH";
 
-  const heartRate = 82;
-  const spo2 = 97;
-  const risk = "HIGH"; // change dynamically later
-  const deviceConnected = true;
-  const battery = 85;
+export default function Dashboard(){
 
-  const callEmergency = () => {
-    Linking.openURL("tel:112"); // India emergency
-  };
+const heartRate = 82;
+const spo2 = 97;
+let risk: RiskLevel = "LOW";
 
-  return (
+const lastUpdated = new Date().toLocaleTimeString([], {
+  hour: "2-digit",
+  minute: "2-digit"
+});
 
-    <ScrollView style={styles.container}>
+const callEmergency = () => {
+  Linking.openURL("tel:112");
+};
 
-      <Text style={styles.title}>Stroke Monitoring Dashboard</Text>
+const getStatusColor = () => {
+  if(risk === "LOW") return "#2ecc71";
+  if(risk === "WARNING") return "#f39c12";
+  if(risk === "HIGH") return "#ff3b30";
+  return "#2ecc71";
+};
 
-      {/* EMERGENCY ALERT */}
+const getStatusText = () => {
+  if(risk === "LOW") return "Stable";
+  if(risk === "WARNING") return "Warning";
+  if(risk === "HIGH") return "High Risk";
+  return "Stable";
+};
 
-      {risk === "HIGH" && (
-        <View style={styles.alertBanner}>
+return(
 
-          <Text style={styles.alertTitle}>
-            ⚠ HIGH STROKE RISK DETECTED
-          </Text>
+<ScrollView contentContainerStyle={styles.container}>
 
-          <Text style={styles.alertText}>
-            Abnormal Heart Rhythm
-          </Text>
+<Text style={styles.title}>
+Stroke Monitoring
+</Text>
 
-          <Text style={styles.alertText}>
-            Possible Fall Detected
-          </Text>
+{/* STATUS CARD */}
 
-          <TouchableOpacity
-            style={styles.emergencyButton}
-            onPress={callEmergency}
-          >
-            <Text style={styles.emergencyText}>
-              CALL EMERGENCY CONTACT
-            </Text>
-          </TouchableOpacity>
+<View style={[styles.statusCard,{backgroundColor:getStatusColor()}]}>
 
-        </View>
-      )}
+<Text style={styles.statusLabel}>
+Patient Status
+</Text>
 
-      {/* STROKE RISK */}
+<Text style={styles.statusValue}>
+{getStatusText()}
+</Text>
 
-      <View style={styles.riskCard}>
-        <Text style={styles.cardTitle}>Stroke Risk</Text>
-        <Text style={styles.riskValue}>{risk}</Text>
-      </View>
+</View>
 
-      {/* VITALS */}
+{/* EMERGENCY ALERT */}
 
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Heart Rate</Text>
-        <Text style={styles.value}>{heartRate} bpm</Text>
-      </View>
+{risk === "HIGH" && (
 
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>SpO₂</Text>
-        <Text style={styles.value}>{spo2}%</Text>
-      </View>
+<View style={styles.alertCard}>
 
-      {/* DEVICE STATUS */}
+<Text style={styles.alertTitle}>
+⚠ Stroke Risk Detected
+</Text>
 
-      <Text style={styles.section}>Device Status</Text>
+<TouchableOpacity
+style={styles.callButton}
+onPress={callEmergency}
+>
 
-      <View style={styles.card}>
-        <Text>ESP32 Connection</Text>
-        <Text style={styles.status}>
-          {deviceConnected ? "Connected" : "Disconnected"}
-        </Text>
-      </View>
+<Text style={styles.callText}>
+CALL EMERGENCY
+</Text>
 
-      <View style={styles.card}>
-        <Text>Battery</Text>
-        <Text style={styles.value}>{battery}%</Text>
-      </View>
+</TouchableOpacity>
 
-    </ScrollView>
-  );
+</View>
+
+)}
+
+{/* VITALS */}
+
+<View style={styles.vitalRow}>
+
+<View style={styles.vitalCard}>
+
+<Ionicons name="heart" size={28} color="#e74c3c"/>
+
+<Text style={styles.vitalLabel}>
+Heart Rate
+</Text>
+
+<Text style={styles.vitalValue}>
+{heartRate} bpm
+</Text>
+
+<Text style={styles.time}>
+Updated {lastUpdated}
+</Text>
+
+</View>
+
+<View style={styles.vitalCard}>
+
+<Ionicons name="pulse" size={28} color="#3498db"/>
+
+<Text style={styles.vitalLabel}>
+SpO₂
+</Text>
+
+<Text style={styles.vitalValue}>
+{spo2}%
+</Text>
+
+<Text style={styles.time}>
+Updated {lastUpdated}
+</Text>
+
+</View>
+
+</View>
+
+</ScrollView>
+
+)
 }
 
 const styles = StyleSheet.create({
 
 container:{
-  flex:1,
-  backgroundColor:"#f5f5f5",
-  padding:20
+padding:20,
+paddingBottom:120
 },
 
 title:{
-  fontSize:26,
-  fontWeight:"bold",
-  marginBottom:20
+fontSize:28,
+fontWeight:"bold",
+marginBottom:20
 },
 
-section:{
-  fontSize:18,
-  fontWeight:"bold",
-  marginTop:20,
-  marginBottom:10
+statusCard:{
+padding:20,
+borderRadius:14,
+marginBottom:20
 },
 
-alertBanner:{
-  backgroundColor:"#ff3b30",
-  padding:20,
-  borderRadius:12,
-  marginBottom:20
+statusLabel:{
+color:"white",
+fontSize:16
+},
+
+statusValue:{
+color:"white",
+fontSize:26,
+fontWeight:"bold"
+},
+
+alertCard:{
+backgroundColor:"#ffe6e6",
+padding:20,
+borderRadius:14,
+marginBottom:20
 },
 
 alertTitle:{
-  color:"white",
-  fontSize:20,
-  fontWeight:"bold",
-  marginBottom:10
+color:"#c0392b",
+fontSize:18,
+fontWeight:"bold",
+marginBottom:10
 },
 
-alertText:{
-  color:"white",
-  fontSize:16
+callButton:{
+backgroundColor:"#e74c3c",
+padding:12,
+borderRadius:10
 },
 
-emergencyButton:{
-  backgroundColor:"white",
-  padding:12,
-  borderRadius:10,
-  marginTop:15
+callText:{
+color:"white",
+textAlign:"center",
+fontWeight:"bold"
 },
 
-emergencyText:{
-  color:"#ff3b30",
-  fontWeight:"bold",
-  textAlign:"center"
+vitalRow:{
+flexDirection:"row",
+justifyContent:"space-between"
 },
 
-riskCard:{
-  backgroundColor:"#2ecc71",
-  padding:20,
-  borderRadius:12,
-  marginBottom:10
+vitalCard:{
+backgroundColor:"white",
+padding:20,
+borderRadius:14,
+width:"48%",
+alignItems:"center"
 },
 
-riskValue:{
-  fontSize:26,
-  fontWeight:"bold",
-  color:"white"
+vitalLabel:{
+marginTop:8,
+fontSize:16
 },
 
-cardTitle:{
-  fontSize:16
+vitalValue:{
+fontSize:22,
+fontWeight:"bold"
 },
 
-card:{
-  backgroundColor:"white",
-  padding:20,
-  borderRadius:12,
-  marginBottom:10
-},
-
-value:{
-  fontSize:22,
-  fontWeight:"bold"
-},
-
-status:{
-  fontSize:18,
-  fontWeight:"bold",
-  color:"#2ecc71"
+time:{
+color:"gray",
+fontSize:12,
+marginTop:4
 }
 
 });

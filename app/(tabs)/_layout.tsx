@@ -2,33 +2,39 @@ import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function TabLayout() {
-  return (
-    <Tabs
-      screenOptions={({ route }) => ({
-        headerShown: true,
-        tabBarActiveTintColor: "#2ecc71",
-        tabBarIcon: ({ color, size }) => {
 
-          let iconName: any;
+return(
 
-          if (route.name === "index") iconName = "home";
-          else if (route.name === "vitals") iconName = "pulse";
-          else if (route.name === "alerts") iconName = "warning";
-          else if (route.name === "history") iconName = "stats-chart";
+<Tabs
+screenOptions={({route})=>({
 
-          return <Ionicons name={iconName} size={size} color={color} />;
-        },
-      })}
-    >
+tabBarActiveTintColor:"#2ecc71",
 
-      <Tabs.Screen name="index" options={{ title: "Dashboard" }} />
+tabBarIcon:({color,size})=>{
 
-      <Tabs.Screen name="vitals" options={{ title: "Vitals" }} />
+let iconName:any="home";
 
-      <Tabs.Screen name="alerts" options={{ title: "Alerts" }} />
+if(route.name==="index") iconName="home";
+if(route.name==="vitals") iconName="pulse";
+if(route.name==="alerts") iconName="warning";
+if(route.name==="history") iconName="stats-chart";
+if(route.name==="face") iconName="camera";
 
-      <Tabs.Screen name="history" options={{ title: "History" }} />
+return <Ionicons name={iconName} size={size} color={color}/>
 
-    </Tabs>
-  );
+}
+
+})}
+>
+
+<Tabs.Screen name="index" options={{title:"Dashboard"}}/>
+<Tabs.Screen name="vitals" options={{title:"Vitals"}}/>
+<Tabs.Screen name="alerts" options={{title:"Alerts"}}/>
+<Tabs.Screen name="history" options={{title:"History"}}/>
+<Tabs.Screen name="face" options={{title:"Face Scan"}}/>
+
+</Tabs>
+
+)
+
 }
